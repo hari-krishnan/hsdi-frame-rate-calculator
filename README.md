@@ -24,6 +24,10 @@ git commit -m "Add hsdi-frame-rate-calculator submodule"
 Then the calculator is also available under the profile Pages site at  
 `.../profile/projects/hsdi-frame-rate-calculator/` (mirrors this repo).
 
+## License
+
+[MIT](LICENSE) — see [LICENSE](LICENSE).
+
 ## Author
 
 **Hari Unnikrishnan** — [Profile](https://hari-krishnan.github.io/profile/)
