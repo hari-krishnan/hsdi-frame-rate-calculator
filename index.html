@@ -16,6 +16,25 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HSDI Frame Rate &amp; Pixel Excursion Calculator" />
   <meta name="twitter:description" content="Interactive calculator for optimal frame rate and pixel excursion in HSDI." />
+  <!-- Citation (fill citation_doi when Zenodo deposit is final) -->
+  <meta name="citation_title" content="HSDI Frame Rate &amp; Pixel Excursion Calculator" />
+  <meta name="citation_author" content="Unnikrishnan, Hari" />
+  <meta name="citation_publication_date" content="2026/03/19" />
+  <meta name="citation_doi" content="10.5281/zenodo.19120795" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "HSDI Frame Rate & Pixel Excursion Calculator",
+    "version": "0.0.1",
+    "description": "Interactive web software for high-speed digital laryngeal imaging (HSDI): feasible frame-rate interval and minimum glottal pixel excursion for vocal-fold kinematics.",
+    "license": "https://opensource.org/licenses/MIT",
+    "codeRepository": "https://github.com/hari-krishnan/hsdi-frame-rate-calculator",
+    "url": "https://hari-krishnan.github.io/hsdi-frame-rate-calculator/",
+    "author": { "@type": "Person", "name": "Hari Unnikrishnan" },
+    "sameAs": "https://doi.org/10.5281/zenodo.19120795"
+  }
+  </script>
   <style>
     *,
     *::before,
@@ -227,6 +246,36 @@
     .error-msg.visible {
       display: block;
     }
+
+    .zenodo-block {
+      max-width: 960px;
+      margin: 0 auto 1.5rem;
+      background: #f7fafc;
+      border: 1px solid #c8d9e8;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
+      color: #334;
+      line-height: 1.65;
+    }
+
+    .zenodo-block h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a2940;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .zenodo-block a {
+      color: #2c5282;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .zenodo-block a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
 
@@ -236,6 +285,22 @@
   <p class="subtitle">
     Companion to: <em>Optimal Sampling and Noise Mitigation for Vocal Fold Kinematics in High-Speed Digital Laryngeal Imaging</em> (manuscript under preparation)
   </p>
+
+  <div class="zenodo-block">
+    <h2>Archive &amp; citation (Zenodo)</h2>
+    <p style="margin:0 0 0.65rem 0;">
+      <a href="https://doi.org/10.5281/zenodo.19120795" rel="noopener" target="_blank" title="DOI">
+        <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19120795.svg" alt="DOI" width="200" height="20" style="vertical-align:middle;margin-right:0.5rem;" />
+      </a>
+      <strong>DOI:</strong>
+      <a href="https://doi.org/10.5281/zenodo.19120795" rel="noopener" target="_blank">10.5281/zenodo.19120795</a>
+      &nbsp;·&nbsp;
+      <a href="https://zenodo.org/records/19120795" rel="noopener" target="_blank">Zenodo record</a>
+    </p>
+    <p style="margin:0;">
+      This software is archived on <strong>Zenodo</strong> for citation and long-term access. Interactive web software for high-speed digital laryngeal imaging (HSDI): it computes the feasible range of camera frame rates and minimum peak glottal excursion from fundamental frequency, open and speed quotients, frames per vibratory phase, and peak excursion, accounting for loss of velocity SNR when inter-frame motion falls below one pixel. A second mode gives the minimum excursion <em>K</em> required for a chosen frame rate. Client-side HTML/JavaScript; static deployment.
+    </p>
+  </div>
 
   <div style="max-width:960px;margin:0 auto 2rem;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:1.25rem 1.5rem;border-left:4px solid #2c5282;">
     <p style="font-size:0.9rem;color:#444;line-height:1.7;margin:0;">

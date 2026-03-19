@@ -7,6 +7,16 @@ https://hari-krishnan.github.io/hsdi-frame-rate-calculator/
 
 Companion to *Optimal Sampling and Noise Mitigation for Vocal Fold Kinematics in High-Speed Digital Laryngeal Imaging* (manuscript under preparation).
 
+## Citation (Zenodo)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19120795.svg)](https://doi.org/10.5281/zenodo.19120795)
+
+Record: [Zenodo](https://zenodo.org/records/19120795)
+
+```
+Unnikrishnan, H. (2026). HSDI Frame Rate & Pixel Excursion Calculator (Version 0.0.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19120795
+```
+
 ## License
 
 [MIT](LICENSE)
