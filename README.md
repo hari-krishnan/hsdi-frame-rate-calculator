@@ -7,6 +7,27 @@ https://hari-krishnan.github.io/hsdi-frame-rate-calculator/
 
 Companion to *Optimal Sampling and Noise Mitigation for Vocal Fold Kinematics in High-Speed Digital Laryngeal Imaging* (manuscript under preparation).
 
+## Create the GitHub repo (first time)
+
+Log in once, then run the helper script (public repo, pushes `main`, MIT is already in `LICENSE`):
+
+```bash
+gh auth login
+cd /path/to/hsdi-frame-rate-calculator
+./scripts/publish-to-github.sh
+```
+
+Or manually:
+
+```bash
+gh auth login
+git config user.name "Hari Unnikrishnan"
+git config user.email "harikrish.u@gmail.com"
+gh repo create hari-krishnan/hsdi-frame-rate-calculator --public --source=. --remote=origin --push \
+  --description "HSDI frame rate & pixel excursion calculator (static site / GitHub Pages)" \
+  --homepage "https://hari-krishnan.github.io/hsdi-frame-rate-calculator/"
+```
+
 ## GitHub Pages
 
 1. Repo → **Settings** → **Pages** → Build and deployment: **Deploy from a branch** → Branch `main` / folder `/ (root)`.
