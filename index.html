@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HSDI Frame Rate &amp; Pixel Excursion Calculator</title>
+  <meta name="description" content="Interactive calculator for finding the optimal frame rate and pixel excursion in HSDI. Avoid quantization noise in vocal fold kinematic measurements.">
+  <meta name="keywords" content="HSDI, Laryngeal Imaging, Sampling Rate, Biomechanics, Vocal Fold Kinematics, Signal Processing, Computer Vision">
+  <link rel="canonical" href="https://hari-krishnan.github.io/hsdi-frame-rate-calculator/" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="HSDI Frame Rate &amp; Pixel Excursion Calculator" />
+  <meta property="og:description" content="Interactive calculator for optimal frame rate and pixel excursion in high-speed digital laryngeal imaging (HSDI)." />
+  <meta property="og:url" content="https://hari-krishnan.github.io/hsdi-frame-rate-calculator/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HSDI Frame Rate &amp; Pixel Excursion Calculator" />
+  <meta name="twitter:description" content="Interactive calculator for optimal frame rate and pixel excursion in HSDI." />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      background: #f4f6f9;
+      color: #222;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: #1a2940;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #556;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 680px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2940;
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e8eef6;
+    }
+
+    .field {
+      margin-bottom: 0.9rem;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #445;
+      margin-bottom: 0.3rem;
+    }
+
+    label .hint {
+      font-weight: 400;
+      color: #889;
+      font-size: 0.75rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border: 1.5px solid #d0d8e4;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      transition: border-color 0.15s;
+      background: #fafdff;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4a7fcb;
+      background: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      background: #2c5fa8;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.4rem;
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: #1e4a8a;
+    }
+
+    .result-block {
+      margin-top: 1.2rem;
+      background: #f0f5fc;
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      display: none;
+    }
+
+    .result-block.visible {
+      display: block;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .result-label {
+      color: #556;
+    }
+
+    .result-value {
+      font-weight: 700;
+      color: #1a2940;
+      text-align: right;
+    }
+
+    .result-value.good {
+      color: #1a7a3c;
+    }
+
+    .result-value.warn {
+      color: #b85c00;
+    }
+
+    .result-value.bad {
+      color: #a01010;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #d5e0ef;
+      margin: 0.55rem 0;
+    }
+
+    .feasibility-badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+
+    .badge-yes {
+      background: #d4f0e0;
+      color: #196b38;
+    }
+
+    .badge-no {
+      background: #fde8e8;
+      color: #8b1a1a;
+    }
+
+    .eq-box {
+      margin-top: 1.4rem;
+      background: #f8f9fc;
+      border-left: 3px solid #4a7fcb;
+      border-radius: 0 6px 6px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      color: #445;
+      line-height: 1.9;
+    }
+
+    .eq-box code {
+      font-family: "SF Mono", "Fira Mono", "Consolas", monospace;
+      font-size: 0.82rem;
+      color: #2c5fa8;
+    }
+
+    .error-msg {
+      color: #a01010;
+      font-size: 0.82rem;
+      margin-top: 0.4rem;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>HSDI Frame Rate &amp; Pixel Excursion Calculator</h1>
+  <p class="subtitle">
+    Companion to: <em>Optimal Sampling and Noise Mitigation for Vocal Fold Kinematics in High-Speed Digital Laryngeal Imaging</em> (manuscript under preparation)
+  </p>
+
+  <div style="max-width:960px;margin:0 auto 2rem;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:1.25rem 1.5rem;border-left:4px solid #2c5282;">
+    <p style="font-size:0.9rem;color:#444;line-height:1.7;margin:0;">
+      Faster cameras don't always mean better data. For periodic motion like vocal fold vibration, there is a <strong>bounded feasible interval</strong> of frame rates —
+      too slow misses peaks and transitions, but too fast causes inter-frame displacement to fall below one pixel, collapsing velocity SNR by ~6 dB per doubling of frame rate.
+      This tool computes that interval from your imaging parameters, and checks whether your pixel excursion
+      is sufficient for any valid frame rate to exist. Validated across 67 subjects at 4000–16000 fps.
+    </p>
+    <p style="font-size:0.8rem;color:#888;margin-top:0.6rem;">
+      By <strong>Hari Unnikrishnan</strong> &nbsp;·&nbsp; <a href="https://hari-krishnan.github.io/profile/" style="color:#2c5282;text-decoration:none;">← Back to profile</a>
+    </p>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== Calculator 1: Frame Rate Bounds ===== -->
+    <div class="card">
+      <h2>Frame Rate Bounds [f&#x209B;&#x5F;min, f&#x209B;&#x5F;max]</h2>
+
+      <div class="field">
+        <label>f&#x2080; — Fundamental frequency <span class="hint">Hz</span></label>
+        <input type="number" id="fr-f0" value="220" min="50" max="800" step="1" />
+      </div>
+      <div class="field">
+        <label>o — Open quotient <span class="hint">0 &lt; o &lt; 1</span></label>
+        <input type="number" id="fr-o" value="0.60" min="0.01" max="0.99" step="0.01" />
+      </div>
+      <div class="field">
+        <label>s — Speed quotient <span class="hint">T&#x2080;p / T&#x2081;l, &gt; 0</span></label>
+        <input type="number" id="fr-s" value="1.20" min="0.1" max="10" step="0.05" />
+      </div>
+      <div class="field">
+        <label>K — Peak glottal excursion <span class="hint">pixels</span></label>
+        <input type="number" id="fr-K" value="30" min="1" max="500" step="1" />
+      </div>
+      <div class="field">
+        <label>N — Frames per vibratory phase <span class="hint">typically 5</span></label>
+        <input type="number" id="fr-N" value="5" min="1" max="20" step="1" />
+      </div>
+
+      <p class="error-msg" id="fr-error"></p>
+      <button onclick="calcFrameRate()">Calculate</button>
+
+      <div class="result-block" id="fr-result">
+        <div class="result-row">
+          <span class="result-label">f&#x209B;&#x5F;min</span>
+          <span class="result-value" id="fr-out-min">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">f&#x209B;&#x5F;max</span>
+          <span class="result-value" id="fr-out-max">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="result-row">
+          <span class="result-label">K&#x5F;min (feasibility)</span>
+          <span class="result-value" id="fr-out-kmin">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Feasible interval</span>
+          <span class="result-value" id="fr-out-feasible">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="result-row">
+          <span class="result-label">SNR&#x1D5FE;&#x2091;&#x2097; at f&#x209B;&#x5F;min</span>
+          <span class="result-value" id="fr-out-snr-min">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">SNR&#x1D5FE;&#x2091;&#x2097; at f&#x209B;&#x5F;max</span>
+          <span class="result-value" id="fr-out-snr-max">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="result-row">
+          <span class="result-label">Inter-frame displacement at f&#x209B;&#x5F;max</span>
+          <span class="result-value" id="fr-out-delta">—</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Calculator 2: K for given frame rate ===== -->
+    <div class="card">
+      <h2>Minimum K for a Given Frame Rate</h2>
+
+      <div class="field">
+        <label>f&#x209B; — Camera frame rate <span class="hint">Hz</span></label>
+        <input type="number" id="k-fs" value="4000" min="100" max="100000" step="100" />
+      </div>
+      <div class="field">
+        <label>f&#x2080; — Fundamental frequency <span class="hint">Hz</span></label>
+        <input type="number" id="k-f0" value="220" min="50" max="800" step="1" />
+      </div>
+      <div class="field">
+        <label>o — Open quotient <span class="hint">0 &lt; o &lt; 1</span></label>
+        <input type="number" id="k-o" value="0.60" min="0.01" max="0.99" step="0.01" />
+      </div>
+      <div class="field">
+        <label>s — Speed quotient <span class="hint">T&#x2080;p / T&#x2081;l, &gt; 0</span></label>
+        <input type="number" id="k-s" value="1.20" min="0.1" max="10" step="0.05" />
+      </div>
+
+      <p class="error-msg" id="k-error"></p>
+      <button onclick="calcK()">Calculate</button>
+
+      <div class="result-block" id="k-result">
+        <div class="result-row">
+          <span class="result-label">K&#x5F;min required</span>
+          <span class="result-value" id="k-out-kmin">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Inter-frame displacement &#x3B4;</span>
+          <span class="result-value" id="k-out-delta">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="result-row">
+          <span class="result-label">SNR&#x1D5FE;&#x2091;&#x2097; at K&#x5F;min</span>
+          <span class="result-value" id="k-out-snr">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="result-row" style="font-size:0.8rem; color:#556; line-height:1.5;">
+          <span>K&#x5F;min is the minimum glottal excursion (pixels) needed so that each
+            frame captures ≥ 1 pixel of motion — below this the velocity SNR
+            becomes dominated by quantization noise.</span>
+        </div>
+      </div>
+
+
+      <!-- Typical values reference table -->
+      <div class="eq-box" style="margin-top:0.8rem; border-left-color:#8ab4e8;">
+        <strong>Typical operating points</strong>
+        <table style="width:100%; border-collapse:collapse; margin-top:0.4rem; font-size:0.78rem;">
+          <thead>
+            <tr style="color:#334; border-bottom:1px solid #c8d8ee;">
+              <th style="text-align:left; padding:2px 4px;">Population</th>
+              <th style="text-align:right; padding:2px 4px;">f&#x2080; (Hz)</th>
+              <th style="text-align:right; padding:2px 4px;">K&#x5F;min @4 kHz</th>
+              <th style="text-align:right; padding:2px 4px;">K&#x5F;min @16 kHz</th>
+            </tr>
+          </thead>
+          <tbody id="ref-table">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- .layout -->
+
+  <script>
+    // -----------------------------------------------------------------------
+    // Core maths (mirrors frame_rate_calculator.py)
+    // -----------------------------------------------------------------------
+
+    function fsMin(f0, o, s, N) {
+      return N * f0 * (1 + s) / (o * Math.min(s, 1));
+    }
+
+    function fsMax(f0, o, s, K) {
+      return K * f0 * (1 + s) / (o * Math.max(s, 1));
+    }
+
+    function kMinFeasibility(s, N) {
+      return N * Math.max(s, 1 / s);
+    }
+
+    function kMinForFs(fs, f0, o, s) {
+      return fs * o * Math.max(s, 1) / (f0 * (1 + s));
+    }
+
+    function snrVel(f0, o, s, K, fs) {
+      const delta = K * f0 * (s + 1) / (o * s * fs);
+      if (delta <= 0) return -Infinity;
+      return 20 * Math.log10(Math.sqrt(6) * delta);
+    }
+
+    function interFrameDisp(f0, o, s, K, fs) {
+      return K * f0 * (s + 1) / (o * s * fs);
+    }
+
+    // -----------------------------------------------------------------------
+    // UI helpers
+    // -----------------------------------------------------------------------
+
+    function fmt(v, decimals = 1) {
+      return v.toLocaleString("en-US", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function snrClass(snr) {
+      if (snr >= 15) return "good";
+      if (snr >= 7) return "warn";
+      return "bad";
+    }
+
+    function setField(id, text, cls = "") {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = "result-value" + (cls ? " " + cls : "");
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = "error-msg visible";
+    }
+
+    function clearError(id) {
+      const el = document.getElementById(id);
+      el.className = "error-msg";
+    }
+
+    // -----------------------------------------------------------------------
+    // Calculator 1: Frame rate bounds
+    // -----------------------------------------------------------------------
+
+    function calcFrameRate() {
+      clearError("fr-error");
+
+      const f0 = parseFloat(document.getElementById("fr-f0").value);
+      const o = parseFloat(document.getElementById("fr-o").value);
+      const s = parseFloat(document.getElementById("fr-s").value);
+      const K = parseFloat(document.getElementById("fr-K").value);
+      const N = parseInt(document.getElementById("fr-N").value, 10);
+
+      if ([f0, o, s, K, N].some(isNaN) || f0 <= 0 || o <= 0 || o >= 1 || s <= 0 || K <= 0 || N < 1) {
+        showError("fr-error", "Please enter valid values: f₀ > 0, 0 < o < 1, s > 0, K > 0, N ≥ 1.");
+        return;
+      }
+
+      const lo = fsMin(f0, o, s, N);
+      const hi = fsMax(f0, o, s, K);
+      const km = kMinFeasibility(s, N);
+      const feasible = K >= km;
+      const snrLo = snrVel(f0, o, s, K, lo);
+      const snrHi = snrVel(f0, o, s, K, hi);
+      const delta = interFrameDisp(f0, o, s, K, hi);
+
+      setField("fr-out-min", fmt(lo) + " Hz");
+      setField("fr-out-max", fmt(hi) + " Hz");
+      setField("fr-out-kmin", fmt(km, 2) + " px");
+
+      const badge = document.getElementById("fr-out-feasible");
+      if (feasible) {
+        badge.innerHTML = '<span class="feasibility-badge badge-yes">YES — interval exists</span>';
+      } else {
+        badge.innerHTML = '<span class="feasibility-badge badge-no">NO — increase K or reduce N</span>';
+      }
+
+      setField("fr-out-snr-min", fmt(snrLo, 1) + " dB", snrClass(snrLo));
+      setField("fr-out-snr-max", fmt(snrHi, 1) + " dB", snrClass(snrHi));
+      setField("fr-out-delta", fmt(delta, 3) + " px/frame");
+
+      document.getElementById("fr-result").className = "result-block visible";
+    }
+
+    // -----------------------------------------------------------------------
+    // Calculator 2: K for given frame rate
+    // -----------------------------------------------------------------------
+
+    function calcK() {
+      clearError("k-error");
+
+      const fs = parseFloat(document.getElementById("k-fs").value);
+      const f0 = parseFloat(document.getElementById("k-f0").value);
+      const o = parseFloat(document.getElementById("k-o").value);
+      const s = parseFloat(document.getElementById("k-s").value);
+
+      if ([fs, f0, o, s].some(isNaN) || fs <= 0 || f0 <= 0 || o <= 0 || o >= 1 || s <= 0) {
+        showError("k-error", "Please enter valid values: fₛ > 0, f₀ > 0, 0 < o < 1, s > 0.");
+        return;
+      }
+
+      const K_req = kMinForFs(fs, f0, o, s);
+      const delta = interFrameDisp(f0, o, s, K_req, fs);   // = 1.000 by construction
+      const snr = snrVel(f0, o, s, K_req, fs);
+
+      setField("k-out-kmin", fmt(K_req, 2) + " px");
+      setField("k-out-delta", fmt(delta, 3) + " px/frame");
+      setField("k-out-snr", fmt(snr, 1) + " dB", snrClass(snr));
+
+      document.getElementById("k-result").className = "result-block visible";
+    }
+
+    // -----------------------------------------------------------------------
+    // Pre-fill reference table
+    // -----------------------------------------------------------------------
+
+    (function buildRefTable() {
+      const populations = [
+        { label: "Female adult", f0: 220, o: 0.60, s: 1.2 },
+        { label: "Male adult", f0: 120, o: 0.60, s: 1.2 },
+        { label: "Child", f0: 300, o: 0.55, s: 1.3 },
+      ];
+      const tbody = document.getElementById("ref-table");
+      populations.forEach(p => {
+        const k4 = kMinForFs(4000, p.f0, p.o, p.s);
+        const k16 = kMinForFs(16000, p.f0, p.o, p.s);
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+          `<td style="padding:2px 4px;">${p.label}</td>` +
+          `<td style="text-align:right; padding:2px 4px;">${p.f0}</td>` +
+          `<td style="text-align:right; padding:2px 4px;">${k4.toFixed(1)} px</td>` +
+          `<td style="text-align:right; padding:2px 4px;">${k16.toFixed(1)} px</td>`;
+        tbody.appendChild(tr);
+      });
+    })();
+
+    // Allow Enter key to trigger both calculators
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        const active = document.activeElement;
+        if (active && active.closest(".card")) {
+          const card = active.closest(".card");
+          const btn = card.querySelector("button");
+          if (btn) btn.click();
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>
