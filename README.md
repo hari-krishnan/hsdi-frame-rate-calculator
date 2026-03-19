@@ -5,6 +5,8 @@ Interactive web tool for **high-speed digital laryngeal imaging (HSDI)**: comput
 **Live site:**  
 https://hari-krishnan.github.io/hsdi-frame-rate-calculator/
 
+**Source (latest):** [github.com/hari-krishnan/hsdi-frame-rate-calculator — `main`](https://github.com/hari-krishnan/hsdi-frame-rate-calculator/tree/main)
+
 Companion to *Optimal Sampling and Noise Mitigation for Vocal Fold Kinematics in High-Speed Digital Laryngeal Imaging* (manuscript under preparation).
 
 ## Citation (Zenodo)
